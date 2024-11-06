@@ -49,7 +49,7 @@ const LineChart = ({ value = [] }) => {
         datasets: [
             {
                 data: value, // Data for the line chart (values for each day)
-                label: "Revenue", // Label for the dataset
+                label: "Message", // Label for the dataset
                 fill: false, // No filling under the line
                 backgroundColor: "rgba(75,192,192,0.2)", // Background color for the line
                 borderColor: "rgba(75,191,191,1)", // Border color for the line

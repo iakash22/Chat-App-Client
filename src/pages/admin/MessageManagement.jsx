@@ -25,11 +25,11 @@ const columns = [
         renderCell: (params) => {
             const { attachments } = params.row;
             return attachments.length > 0 ? (
-                attachments.map((attach) => {
+                attachments.map((attach, index) => {
                     const url = attach.url;
                     const file = fileformat(url);
                     return (
-                        <Box key={attach?.public_id}>
+                        <Box key={`${attach?.public_id}-${index}`}>
                             <a
                                 href={url}
                                 download
@@ -115,7 +115,7 @@ const MessageManagement = () => {
 
     return (
         <AdminLayout>
-            {loading ? 
+            {loading ?
                 <Skeleton height={"100vh"} /> // Show skeleton loader if data is loading
                 :
                 <Table
