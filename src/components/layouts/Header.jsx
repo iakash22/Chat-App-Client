@@ -6,7 +6,7 @@ import {
     Notifications as NotificationIcon,
     Search as SearchIcon,
 } from '@mui/icons-material'
-import { AppBar, Backdrop, Badge, Box, IconButton, Toolbar, Tooltip, Typography } from '@mui/material'
+import { AppBar, Backdrop, Badge, Box, IconButton, Stack, Toolbar, Tooltip, Typography } from '@mui/material'
 import React, { lazy, Suspense } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { logout } from '../../services/operations/auth'
@@ -62,9 +62,31 @@ const Header = () => {
                 <AppBar position='static' sx={{ backgroundColor: "#ea7070" }}>
                     <Toolbar>
                         {/* App name for larger screens */}
-                        <Typography variant='h6' sx={{ display: { xs: "none", sm: "block" } }}>
-                            Chat App
-                        </Typography>
+                        <Stack
+                            direction={"row"}
+                            alignItems={"center"}
+                            sx={{
+                                cursor: "pointer"
+                            }}
+                            onClick={() => navigate('/')}
+                        >
+                            <img
+                                src="/logo2.png"
+                                alt="Chat-Logo"
+                                width={65}
+                                height={65}
+                                style={{ objectFit: "cover",aspectRatio : "auto" }}
+                            />
+                            <Typography
+                                variant='h6'
+                                sx={{
+                                    display: { xs: "none", sm: "block" },
+                                    marginTop: "0.1rem",
+                                    fontWeight: 600,
+                                }}>
+                                Chat App
+                            </Typography>
+                        </Stack>
 
                         {/* Mobile menu button */}
                         <Box sx={{ display: { xs: "block", sm: "none" } }}>
