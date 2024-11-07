@@ -87,7 +87,8 @@ const Login = () => {
             toast.success(res.data?.message, { duration: "500" }); // Display success toast
         } catch (error) {
             // Handle error during registration
-            console.log(error);
+            // console.log(error);
+            throw new Error(error);
             toast.error(error?.response?.data?.message || "Something Went Wrong!"); // Display error toast
         }
         dispatch(setLoading(false)); // Set loading state to false
