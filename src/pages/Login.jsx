@@ -88,8 +88,8 @@ const Login = () => {
         } catch (error) {
             // Handle error during registration
             // console.log(error);
-            throw new Error(error);
             toast.error(error?.response?.data?.message || "Something Went Wrong!"); // Display error toast
+            throw new Error(error);
         }
         dispatch(setLoading(false)); // Set loading state to false
         toast.dismiss(toastId); // Dismiss loading toast
