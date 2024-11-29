@@ -1,4 +1,5 @@
 import moment from "moment";
+import toast from "react-hot-toast";
 
 // Function to determine the type of file based on the file extension in the URL
 const fileformat = (url) => {
@@ -47,25 +48,67 @@ const getLast7Days = () => {
     return last7Days;
 };
 
+const transformChatName = (name, groupChat) => {
+    console.log(name);
+    if (groupChat) {
+        return name;
+    }
+    const transformName = name.split('-')[1];
+
+    return transformName;
+}
+
 // Function to interact with localStorage based on the action type (GET, SET, REMOVE, CLEAR_ALL)
 const getAndSetFromStorage = ({ key, value, type }) => {
     // Action to get data from localStorage
     if (type === "GET") {
         const res = localStorage.getItem(key) ? JSON.parse(localStorage.getItem(key)) : null; // Return parsed value or null if not found
         return res;
-    } 
+    }
     // Action to set data in localStorage
     else if (type === "SET") {
         localStorage.setItem(key, JSON.stringify(value)); // Store value as a JSON string
-    } 
+    }
     // Action to remove data from localStorage
     else if (type == "REMOVE") {
         localStorage.removeItem(key); // Remove item by key
-    } 
+    }
     // Action to clear all data in localStorage
     else if (type === "CLEAR_ALL") {
         localStorage.clear(); // Clear all items in localStorage
     }
 }
 
-export { fileformat, transformImage, getLast7Days, getAndSetFromStorage };
+const askMediaPermission = async (enableVideo = true, enableAudio = true, setMedia, setPermission) => {
+    try {
+        const cameraPermission = await navigator.permissions.query({ name: 'camera' });
+        const microphonePermission = await navigator.permissions.query({ name: 'microphone' });
+
+        if (cameraPermission.state === "granted" && microphonePermission.state === "granted") {
+            setPermission(true);
+        }
+        else if (cameraPermission.state === "denied" && microphonePermission.state === "denied") {
+            toast.error('Camera & audio access denied.');
+            setPermission(false);
+        }
+        else if (cameraPermission.state === "prompt" && microphonePermission.state === "prompt") {
+            try {
+                const currStream = await navigator.mediaDevices.getUserMedia({
+                    video: enableVideo,
+                    audio: enableAudio,
+                })
+                setMedia(currStream);
+            }
+            catch (error) {
+                setPermission(false);
+                toast.error('Camera & audio access is required for this feature.');
+                console.error('Camera & audio access denied by user:', error);
+            }
+        }
+    } catch (error) {
+        console.error("Error accessing media devices:", error.message);
+        setPermission(false);
+    }
+};
+
+export { fileformat, transformImage, getLast7Days, getAndSetFromStorage, transformChatName, askMediaPermission };

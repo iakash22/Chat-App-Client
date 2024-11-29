@@ -1,5 +1,5 @@
 import { useInfiniteScrollTop } from '6pp'; // Custom hook for infinite scrolling
-import { AttachFile as AttachFileIcon, Send as SendIcon, } from '@mui/icons-material'; // Icons for file attachment and sending message
+import { AttachFile as AttachFileIcon, Send as SendIcon } from '@mui/icons-material'; // Icons for file attachment and sending message
 import { IconButton, Skeleton, Stack } from '@mui/material'; // Material UI components for layout and skeleton loader
 import React, { useCallback, useEffect, useRef, useState } from 'react'; // React hooks and components
 import { useDispatch, useSelector } from 'react-redux'; // Redux hooks for state management
@@ -7,14 +7,15 @@ import { useNavigate } from 'react-router-dom'; // React Router for navigation
 import { ALERT, CHAT_JOINED, CHAT_LEAVED, NEW_MESSAGE, START_TYPING, STOP_TYPING } from '../components/constants/events'; // Event constants for socket communication
 import FileMenu from '../components/dialogs/FileMenu'; // File menu component
 import AppLayout from '../components/layouts/AppLayout'; // Layout component
-import { TypingLoader } from '../components/layouts/Loaders'; // Typing loader component to show typing indicator
+import { MessageLoader, TypingLoader } from '../components/layouts/Loaders'; // Typing loader component to show typing indicator
 import MessageComponent from '../components/shared/MessageComponent'; // Message component to display messages
 import { InputBox } from '../components/styles/StyleComponents'; // Styled input box component
 import { useErrors, useSocketEvents } from '../hooks'; // Custom hooks for handling errors and socket events
 import { useChatDetailsQuery, useGetMessagesQuery } from '../redux/api'; // Redux API hooks for fetching chat details and messages
 import { removeNewMessagesAlert } from '../redux/reducers/slice/chat'; // Redux action to remove new message alert
 import { setIsFileMenu } from '../redux/reducers/slice/misc'; // Redux action to toggle file menu visibility
-import { getSocket } from '../socket'; // Socket connection setup
+import { getSocket } from '../providers/socket'; // Socket connection setup
+import ChatHeadBanner from '../components/specific/ChatHeadBanner';
 
 const Chat = ({ chatId }) => {
     // State hooks for message input, messages, and typing status
@@ -35,14 +36,15 @@ const Chat = ({ chatId }) => {
     const navigate = useNavigate();
 
     // Socket connection setup
-    const socket = getSocket();
+    const {socket} = getSocket();
 
     // Redux state for the current user
     const { user } = useSelector(state => state.auth);
 
     // Fetch chat details and messages using Redux API hooks
     const chatData = useChatDetailsQuery({ chatId, skip: !chatId });
-    const members = chatData?.data?.chat?.members;
+    const shortChatData = chatData?.data?.chat;
+    const members = shortChatData?.members;
     const oldMessagesDataChunk = useGetMessagesQuery({ chatId, page });
 
     // Infinite scroll hook to load older messages
@@ -181,42 +183,46 @@ const Chat = ({ chatId }) => {
     const handlFileOpen = (e) => {
         dispatch(setIsFileMenu(true));
     }
-
+    
     return (
         chatData.isLoading ?
             <Skeleton /> // Display a loading skeleton if chat data is loading
             :
             <>
                 {/* Message container */}
-                <Stack
-                    ref={containerRef}
-                    boxSizing={"border-box"}
-                    padding={"1rem"}
-                    spacing={"1rem"}
-                    height={"90%"}
-                    bgcolor={"rgba(247,247,247,1)"}
-                    sx={{
-                        overflowX: "hidden",
-                        overflowY: "auto"
-                    }}
-                    className='message-container'
-                >
-                    {
-                        // Display all messages
-                        allMessages.map((message, index) => (
-                            <MessageComponent
-                                message={message}
-                                user={user}
-                                key={index}
-                            />
-                        ))
-                    }
+                <ChatHeadBanner data={shortChatData} />
+                {
+                    oldMessagesDataChunk.isLoading ? <MessageLoader /> :
+                        <Stack
+                            ref={containerRef}
+                            boxSizing={"border-box"}
+                            padding={"1rem"}
+                            spacing={"1rem"}
+                            bgcolor={"rgba(247,247,247,1)"}
+                            sx={{
+                                overflowX: "hidden",
+                                overflowY: "auto",
+                                height: { xs: "calc(90% - 4.1rem)", sm: "90%" },
+                            }}
+                            className='message-container'
+                        >
+                            {
+                                // Display all messages
+                                allMessages.map((message, index) => (
+                                    <MessageComponent
+                                        message={message}
+                                        user={user}
+                                        key={index}
+                                    />
+                                ))
+                            }
 
-                    {/* Show typing loader if someone is typing */}
-                    {usertyping && <TypingLoader />}
+                            {/* Show typing loader if someone is typing */}
+                            {usertyping && <TypingLoader />}
 
-                    <div ref={bottomRef} />
-                </Stack>
+                            <div ref={bottomRef} />
+                        </Stack>
+                }
 
                 {/* Message input form */}
                 <form

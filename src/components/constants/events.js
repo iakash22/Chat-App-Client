@@ -10,6 +10,8 @@ const STOP_TYPING = "STOP_TYPING";
 const CHAT_JOINED = "CHAT_JOINED";
 const CHAT_LEAVED = "CHAT_LEAVED";
 const ONLINE_USER = "ONLINE_USER";
+const CALL_USER = "CALL_USER";
+const RECEIVE_CALL = "RECEIVE_CALL";
 
 export {
     ALERT,
@@ -23,4 +25,6 @@ export {
     CHAT_JOINED,
     CHAT_LEAVED,
     ONLINE_USER,
+    CALL_USER,
+    RECEIVE_CALL,
 };

@@ -1,4 +1,4 @@
-import { keyframes, Skeleton, styled } from "@mui/material";
+import { Box, keyframes, Skeleton, styled } from "@mui/material";
 import { Link as LinkComponent } from "react-router-dom";
 
 // Styled component for a visually hidden input element, used for accessibility purposes
@@ -80,3 +80,63 @@ const bounceAnimation2 = keyframes`
 export const BouncingSkeleton = styled(Skeleton)`
     animation: ${bounceAnimation} 1s infinite ease;
 `;
+
+export const ChatBanner = styled("div")`
+    display : flex;
+    flex-direction : row;
+    align-items : center;
+    justify-content : space-between;
+    height : 4.1rem;
+    width : 100%;
+    gap : 1.3rem;
+    padding : 0rem 1rem;
+    background-color : #FFF;
+    overflow : auto;
+    z-index : 100;
+    
+
+    @media (min-width: 600px) {
+        display: none;
+    }
+`
+
+export const IncommingCallContainer = styled(Box)`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width : 100vw;
+    height: 100vh;
+    padding: 2px;
+    color: #fff;
+    position : relative;
+    background : transparent;
+    z-index : 0;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color : rgba(0,0,0,0.1);
+        background-size: cover; 
+        background-position: center;
+        background-repeat: no-repeat;
+        opacity: 0.8;
+        filter : blur(7.5px);
+        z-index: -1; 
+    }
+
+    &::after {
+        content : '';
+        width : 100%;
+        height : 100%;
+        position : absolute;
+        top : 0;
+        left : 0;
+        background-color : rgba(0,0,0,0.79);
+        z-index : -1;
+    }
+`

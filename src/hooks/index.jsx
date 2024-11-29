@@ -8,8 +8,8 @@ const useErrors = (errors = []) => {
             // Check if there's an error
             if (isError) {
                 // If a fallback function is provided, call it
-                if (fallback) fallback(); 
-                else 
+                if (fallback) fallback();
+                else
                     // Display error toast with the error message or default message
                     toast.error(error?.data?.message || "Something Went Wrong");
             }
@@ -50,7 +50,7 @@ const useAsyncMutation = (mutationHook) => {
             setIsLoading(false); // Set loading state to false when mutation is done
         }
     };
-    
+
     return [executeMutation, isLoading, data]; // Return the execute function, loading state, and data
 };
 
@@ -70,5 +70,19 @@ const useSocketEvents = (socket, handlers) => {
     }, [socket, handlers]); // Re-run effect when socket or handlers change
 }
 
+const usePeerEvents = (peer, handlers) => {
+    useEffect(() => {
+        handlers.forEach(({ event, handler }) => {
+            peer.on(event, handler);
+        });
 
-export { useErrors, useAsyncMutation, useSocketEvents };
+        return () => {
+            handlers.forEach(({ event, handler }) => {
+                peer.off(event, handler);
+            });
+        }
+    }, [peer, handlers]);
+}
+
+
+export { useErrors, useAsyncMutation, useSocketEvents, usePeerEvents };

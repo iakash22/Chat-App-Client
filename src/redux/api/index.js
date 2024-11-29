@@ -140,6 +140,16 @@ const api = createApi({
             }),
             invalidatesTags: ["Chat"],
         }),
+        getChatMembers: builder.query({
+            query: (chatId) => {
+                let url = `/chat/members/${chatId}`
+                return ({
+                    url,
+                    credentials: "include",
+                })
+            },
+            providesTags: ["Chat"],
+        })
     }),
 });
 
@@ -161,4 +171,5 @@ export const {
     useAddGroupMemberMutation,
     useDeleteChatMutation,
     useLeaveGroupMutation,
+    useGetChatMembersQuery,
 } = api;

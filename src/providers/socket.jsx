@@ -18,7 +18,11 @@ const SocketProvider = ({ children }) => {
 
     return (
         // Provide the socket instance to the children components
-        <SocketContext.Provider value={socket}>
+        <SocketContext.Provider value={
+            {
+                socket,
+            }
+        }>
             {children}
         </SocketContext.Provider>
     );

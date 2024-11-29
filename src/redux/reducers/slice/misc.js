@@ -10,6 +10,7 @@ const initialState = {
     isDeleteMenu : false,
     isDeleteGroup: false,
     uploadingLoader: false,
+    isChatInfo: false,
     selectDeleteChat: {
         chatId: "",
         groupChat: false,
@@ -54,6 +55,9 @@ const miscSlice = createSlice({
         setOlineUsers: (state, action) => {
             state.onlineUsers = action.payload;
         },
+        setIsChatInfo: (state, action) => {
+            state.isChatInfo = action.payload;
+        }
     }
 });
 
@@ -70,4 +74,5 @@ export const {
     setSelectDeleteChat,
     setUploadingLoader,
     setOlineUsers,
+    setIsChatInfo,
 } = miscSlice.actions

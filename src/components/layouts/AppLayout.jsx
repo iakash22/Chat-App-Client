@@ -3,16 +3,19 @@ import React, { useCallback, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useErrors, useSocketEvents } from '../../hooks'
+import { getSocket } from '../../providers/socket'
 import { useMyChatsQuery } from '../../redux/api'
+import { setCallerData, setCallReceive } from '../../redux/reducers/slice/call'
 import { incrementNotification, setNewMessagesAlert } from '../../redux/reducers/slice/chat'
 import { setIsDeleteMenu, setIsMobile, setOlineUsers, setSelectDeleteChat } from '../../redux/reducers/slice/misc'
-import { getSocket } from '../../socket'
-import { NEW_MESSAGE_ALERT, NEW_REQUEST, ONLINE_USER, REFETCH_CHATS } from '../constants/events'
+import { NEW_MESSAGE_ALERT, NEW_REQUEST, ONLINE_USER, RECEIVE_CALL, REFETCH_CHATS } from '../constants/events'
 import DeleteChatMenu from '../dialogs/DeleteChatMenu'
 import Title from '../shared/Title'
 import ChatList from '../specific/ChatList'
 import Profile from '../specific/Profile'
 import Header from './Header'
+import { AnimatePresence } from 'framer-motion'
+import CallNotification from '../shared/CallNotification'
 
 // Higher-order component to wrap a given component (WrappedComponent) with a layout
 const AppLayout = () => (WrappedComponent) => {
@@ -22,8 +25,9 @@ const AppLayout = () => (WrappedComponent) => {
         const chatId = params.chatId;  // Extract chatId from URL
         const dispatch = useDispatch();
         const navigate = useNavigate();
-        const socket = getSocket();  // Get the socket instance
+        const { socket } = getSocket();  // Get the socket instance
         const { isMobile } = useSelector(state => state.misc);  // Check if mobile layout is enabled
+        const { callReceive } = useSelector(state => state.call);
         const { user } = useSelector(state => state.auth);  // Get user data from Redux store
         const { newMessagesAlert } = useSelector(state => state.chat);  // Get new message alert data
         const { data, isLoading, isError, error, refetch } = useMyChatsQuery("");  // Fetch chat data from API
@@ -70,12 +74,18 @@ const AppLayout = () => (WrappedComponent) => {
             dispatch(setOlineUsers(data));  // Update online users in Redux store
         }, []);
 
+        const receiveCallHandler = useCallback((data) => {
+            dispatch(setCallReceive(true));
+            dispatch(setCallerData(data));
+        }, []);
+
         // Mapping socket event names to event handler functions
         const eventHandlers = {
             [NEW_MESSAGE_ALERT]: newMessagesAlertHandler,
             [NEW_REQUEST]: newRequestHandler,
             [REFETCH_CHATS]: refetchHandler,
             [ONLINE_USER]: onlineUsersHandler,
+            [RECEIVE_CALL]: receiveCallHandler,
             // [START_TYPING]: typingHandler,  // Typing handler is commented out, can be added if needed
         };
 
@@ -84,13 +94,15 @@ const AppLayout = () => (WrappedComponent) => {
 
         return (
             <>
+                <AnimatePresence>
+                    {callReceive && <CallNotification />}
+                </AnimatePresence>
                 <Title />  {/* Display page title */}
                 <Header />  {/* Render the header */}
                 <DeleteChatMenu deleteOptionAnchor={deleteMenuAnchor} />  {/* Render delete chat menu */}
-                
                 {/* Show loading skeleton while fetching chat data */}
                 {
-                    isLoading ? 
+                    isLoading ?
                         <Skeleton />  // Skeleton loader when data is loading
                         :
                         <Drawer open={isMobile} onClose={handleMobileClose}> {/* Mobile drawer for chat list */}
@@ -109,7 +121,7 @@ const AppLayout = () => (WrappedComponent) => {
                     {/* Left side chat list for larger screens */}
                     <Grid item sm={4} md={3} height={"100%"} sx={{ display: { xs: "none", sm: "block" } }}>
                         {
-                            isLoading ? 
+                            isLoading ?
                                 <Skeleton />  // Skeleton loader for chat list
                                 :
                                 <ChatList

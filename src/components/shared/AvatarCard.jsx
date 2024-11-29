@@ -2,7 +2,7 @@ import { Avatar, AvatarGroup, Box, Stack } from '@mui/material'; // Material UI 
 import React from 'react'; // React library
 import { transformImage } from '../../libs/features'; // Utility function to transform image URLs
 
-const AvatarCard = ({ avatar = [], max = 4 }) => {
+const AvatarCard = ({ avatar = [], max = 4, w = "3rem", h = "3rem" }) => {
     return (
         <Stack direction={"row"} spacing={"0.5"}> {/* Stack layout for arranging avatars horizontally */}
             <AvatarGroup max={max} sx={{ position: "relative" }}> {/* AvatarGroup to group avatars with a limit on visible avatars */}
@@ -14,8 +14,8 @@ const AvatarCard = ({ avatar = [], max = 4 }) => {
                                 alt={`Avatar ${index}`} // Alt text for the avatar image
                                 key={Math.random() * 100} // Unique key based on random number for each avatar
                                 sx={{
-                                    width: "3rem", // Set avatar width
-                                    height: "3rem", // Set avatar height
+                                    width: w, // Set avatar width
+                                    height: h, // Set avatar height
                                     position: "absolute", // Use absolute positioning to overlap avatars
                                     left: {
                                         xs: `${0.5 + index}rem`, // Dynamic positioning for small screens
