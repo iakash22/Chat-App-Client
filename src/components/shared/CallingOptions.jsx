@@ -19,29 +19,21 @@ const CallingOptions = ({ callerData }) => {
     const { user } = useSelector(state => state.auth);
     const { videoEnabled, audioEnabled, callAccepted, callDail } = useSelector(state => state.call);
     const callerIDs = callerData?.members.map(({ _id }) => _id);
-    const { stream, myVideo, callUser, leaveCall } = getPeer();
+    const { stream, myVideo, callUser, leaveCall, peer, videoHandler, controlsHandle, audioHandler } = getPeer();
     const dispatch = useDispatch();
 
-    const onMicHandler = () => {
-        dispatch(setAudioEnabled(true));
-    }
-    const offMicHandler = () => {
-        dispatch(setAudioEnabled(false));
-    }
-    const videoHandler = () => {
-        if (stream) {
-            const videoTrack = stream.getVideoTracks()[0];
-            if (videoTrack) {
-                videoTrack.enabled = !videoTrack.enabled;
-                dispatch(setVideoEnabled(videoTrack.enabled));
-                myVideo.current.style.display = videoTrack.enabled ? "block" : "none";
-            }
-        }
-    }
+    // const onMicHandler = () => {
+    //     dispatch(setAudioEnabled(true));
+    // }
+    // const offMicHandler = () => {
+    //     dispatch(setAudioEnabled(false));
+    // }
+
+
     const CallingHandler = () => {
         const callType = params.get('video') === "true" ? "video" : "audio";
         const chatId = params.get('chatId') || callerData?._id;
-        dispatch(setCallMessage({message: `Calling..` }))
+        dispatch(setCallMessage({ message: `Calling..` }))
         callUser(user, callerIDs, callType, chatId);
     }
 
@@ -49,6 +41,22 @@ const CallingOptions = ({ callerData }) => {
         dispatch(setCallMessage({ message: `Hang Up`, messageShowTime: "1000" }));
         await leaveCall(callerIDs, { message: `Hang Up`, error: "", messageShowTime: "1000" });
         // window.location.reload();
+    }
+
+    const audioToggleHandler = () => {
+        if (callAccepted) {
+            audioHandler(callerIDs);
+        } else {
+            dispatch(setAudioEnabled(!audioEnabled));
+        }
+    }
+
+    const videoToggleHandler = () => {
+        if (callAccepted) {
+            videoHandler(callerIDs);
+        } else {
+            controlsHandle();
+        }
     }
 
     return (
@@ -68,13 +76,13 @@ const CallingOptions = ({ callerData }) => {
                     <CallingButton
                         Icon={VideocamRoundedIcon}
                         title={"Video On"}
-                        handler={videoHandler}
+                        handler={videoToggleHandler}
                     />
                     :
                     <CallingButton
                         Icon={VideocamOffRoundedIcon}
                         title={"Video Off"}
-                        handler={videoHandler}
+                        handler={videoToggleHandler}
                     />
             }
             {(callDail || callAccepted) &&
@@ -99,15 +107,15 @@ const CallingOptions = ({ callerData }) => {
             {
                 audioEnabled ?
                     <CallingButton
-                        Icon={MicOffIcon}
-                        title={"Mic Off"}
-                        handler={offMicHandler}
+                        Icon={MicIcon}
+                        title={"Mic On"}
+                        handler={audioToggleHandler}
                     />
                     :
                     <CallingButton
-                        Icon={MicIcon}
-                        title={"Mic On"}
-                        handler={onMicHandler}
+                        Icon={MicOffIcon}
+                        title={"Mic Off"}
+                        handler={audioToggleHandler}
                     />
             }
         </Stack>

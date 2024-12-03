@@ -70,19 +70,5 @@ const useSocketEvents = (socket, handlers) => {
     }, [socket, handlers]); // Re-run effect when socket or handlers change
 }
 
-const usePeerEvents = (peer, handlers) => {
-    useEffect(() => {
-        handlers.forEach(({ event, handler }) => {
-            peer.on(event, handler);
-        });
 
-        return () => {
-            handlers.forEach(({ event, handler }) => {
-                peer.off(event, handler);
-            });
-        }
-    }, [peer, handlers]);
-}
-
-
-export { useErrors, useAsyncMutation, useSocketEvents, usePeerEvents };
+export { useErrors, useAsyncMutation, useSocketEvents };

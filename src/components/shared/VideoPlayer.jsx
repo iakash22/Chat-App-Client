@@ -1,9 +1,11 @@
-import { Avatar, Box, Typography } from '@mui/material'
+import { Avatar, Box, Icon, Stack, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import AvatarCard from './AvatarCard';
 import { getPeer } from '../../providers/Peer';
 import { setCallMessage } from '../../redux/reducers/slice/call';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { MicOff as MicOffIcon, } from '@mui/icons-material'
+import CallDurationTimer from '../specific/CallDurationTimer';
 
 const VideoPlayer = ({
     children,
@@ -15,8 +17,11 @@ const VideoPlayer = ({
     groupChat = false,
     avatar = [],
     callMessage,
+    remoteAudio = true,
+    callTimer = false,
 }) => {
     // console.log(videoRef);
+    const { callAccepted } = useSelector(state => state.call);
     return (
         <Box
             sx={{
@@ -29,20 +34,53 @@ const VideoPlayer = ({
                 zIndex: 0,
             }}
         >
-            <Typography
-                variant='body1'
-                color={"#000"}
+            <Stack
+                direction={"row"}
+                spacing={"1rem"}
+                alignItems={"center"}
+                justifyContent={callTimer ? "space-between" : "flex-start"}
                 sx={{
                     backgroundColor: "transparent",
                     position: "absolute",
                     top: "10px",
                     left: "10px",
-                    fontSize: "20px",
-                    fontWeight: "600"
+                    width : "90%"
                 }}
             >
-                {name}
-            </Typography>
+                <Typography
+                    variant='body1'
+                    color={"#000"}
+                    fontSize={"18px"}
+                    fontWeight={600}
+                >
+                    {name}
+                </Typography>
+
+                {
+                    callAccepted && !remoteAudio && (
+                        <div
+                            style={{
+                                width: "20px",
+                                height: "20px",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                borderRadius: "50%",
+                                backgroundColor: "#6B8CFF",
+                                boxShadow: "rgba(0, 0, 0, 0.19) 0px 10px 20px, rgb(107, 140, 255, 0.45) 0px 6px 6px",
+                            }}
+                        >
+                            <MicOffIcon
+                                sx={{
+                                    width: "14px"
+                                }}
+                            />
+                        </div>
+                    )
+                }
+
+                {callAccepted && callTimer && <CallDurationTimer />}
+            </Stack>
             {
                 <video
                     ref={videoRef}
@@ -57,7 +95,7 @@ const VideoPlayer = ({
                     }}
                     playsInline
                     autoPlay
-                    muted={audioEnabled}
+                    muted={!callAccepted}
                 />
             }
             {!videoVisible && <VideoAvatar avatar={avatar} group={groupChat} callMessage={callMessage} />}
@@ -68,7 +106,7 @@ const VideoPlayer = ({
 
 export default VideoPlayer
 
-const VideoAvatar = ({ avatar, group, callMessage }) => {  
+const VideoAvatar = ({ avatar, group, callMessage }) => {
     const dispatch = useDispatch();
     useEffect(() => {
         let timerId;

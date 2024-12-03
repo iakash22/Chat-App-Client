@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     videoEnabled: true,
     audioEnabled: true,
-    userAudioEnabled: false,
+    userAudioEnabled: true,
     userVideoEnabled: false,
     hideCallNotification: false,
     callReceive: false,

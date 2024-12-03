@@ -28,12 +28,12 @@ const ChatHeadBanner = ({ data }) => {
     const voiceCallHandler = () => {
         const url = `/call/?video=false&chatId=${_id}`;
         navigate(url)
-        console.log('Voice Call');
+        // console.log('Voice Call');
     }
     const videoCallHandler = () => {
         const url = `/call/?video=true&chatId=${_id}`;
         navigate(url)
-        console.log('Video Call');
+        // console.log('Video Call');
     }
 
     return (
@@ -96,16 +96,20 @@ const ChatHeadBanner = ({ data }) => {
                 gap: "1rem",
                 alignItems: "center"
             }}>
-                <TooltipIconButton
-                    title={"Voice Call"}
-                    Icon={CallOutlinedIcon}
-                    handler={voiceCallHandler}
-                />
-                <TooltipIconButton
-                    title={"Video Call"}
-                    Icon={VideocamOutlinedIcon}
-                    handler={videoCallHandler}
-                />
+                {
+                    !groupChat && <TooltipIconButton
+                        title={"Voice Call"}
+                        Icon={CallOutlinedIcon}
+                        handler={voiceCallHandler}
+                    />
+                }
+                {
+                    !groupChat && <TooltipIconButton
+                        title={"Video Call"}
+                        Icon={VideocamOutlinedIcon}
+                        handler={videoCallHandler}
+                    />
+                }
                 <TooltipIconButton
                     title={"Chat Info"}
                     Icon={InfoOutlinedIcon}

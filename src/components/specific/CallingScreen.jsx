@@ -8,8 +8,8 @@ import IncommingCallScreen from './IncommingCallScreen';
 
 const CallingScreen = ({ myData, userData, isLoading }) => {
     const theme = useTheme();
-    const { callerData, callReceive, videoEnabled, audioEnabled, callMessage, callAccepted, callEnded, userVideoEnabled } = useSelector(state => state.call);
-    // console.log(userVideoEnabled);
+    const { callerData, callReceive, videoEnabled, audioEnabled, callMessage, callAccepted, callEnded, userVideoEnabled, userAudioEnabled } = useSelector(state => state.call);
+    // console.log(userAudioEnabled);
     const { myVideo, userVideo } = getPeer();
     // console.log(callReceive);
     const userName = userData?.members[0].name;
@@ -41,6 +41,7 @@ const CallingScreen = ({ myData, userData, isLoading }) => {
                         audioEnabled={audioEnabled}
                         name={myData.name}
                         avatar={[myData?.avatar?.url]}
+                        callTimer={true}
                     />
                     {isLoading ? <Skeleton />
                         :
@@ -51,6 +52,7 @@ const CallingScreen = ({ myData, userData, isLoading }) => {
                             callMessage={callMessage}
                             groupChat={userData?.groupChat}
                             avatar={userData?.avatar}
+                            remoteAudio={userAudioEnabled}
                         >
                             <CallingOptions callerData={userData} />
                         </VideoPlayer>

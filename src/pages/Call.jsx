@@ -88,22 +88,17 @@ const Call = () => {
     //     connectionRef.current = peer;
     // };
 
-    const callUserHandler = useCallback((callerData) => {
-        dispatch(setCallReceive(true));
-        dispatch(setCallerData(callerData));
-    });
 
-    const handlers = {
-        [CALL_USER]: callUserHandler,
-    }
+    // const handlers = {
+    //     [CALL_USER]: callUserHandler,
+    // }
 
     // useSocketEvents(socket, handlers);
     useErrors([{ error, isError }]);
 
-    // return !mediaPermission ? (
-    //     <CameraBlocked />
-    // ) : 
-    return (
+    return !mediaPermission ? (
+        <CameraBlocked />
+    ) : 
         <Container
             sx={{
                 width: "100vw",
@@ -117,114 +112,115 @@ const Call = () => {
 
             {/* <CallingScreenTemp callerData={friendUser} /> */}
         </Container>
+// {
+//         // <Box
+//         //     sx={{
+//         //         display: 'flex',
+//         //         justifyContent: 'center',
+//         //         alignItems: 'center',
+//         //         height: '100vh',
+//         //         bgcolor: 'black',
+//         //         padding: "1rem",
+//         //         flexDirection: "column",
+//         //         gap: "1rem"
+//         //     }}
+//         // >
+//         //     {/* Video Call Section */}
+//         //     <Box
+//         //         sx={{
+//         //             flex: 1,
+//         //             display: 'flex',
+//         //             flexDirection: 'column',
+//         //             alignItems: 'center',
+//         //             justifyContent: 'center',
+//         //             bgcolor: '#333',
+//         //             height: '100%',
+//         //             width: "100%",
+//         //             borderRadius: 2,
+//         //             overflow: "hidden"
+//         //             // marginRight: 2,
+//         //         }}
+//         //     >
+//         //         {
+//         //             !videoEnabled &&
+//         //             <>
+//         //                 <VideoOffIcon sx={{ fontSize: 50, color: '#888' }} />
+//         //                 <Typography color="white" mt={1}>
+//         //                     Camera off
+//         //                 </Typography>
+//         //             </>
+//         //         }
 
-        // <Box
-        //     sx={{
-        //         display: 'flex',
-        //         justifyContent: 'center',
-        //         alignItems: 'center',
-        //         height: '100vh',
-        //         bgcolor: 'black',
-        //         padding: "1rem",
-        //         flexDirection: "column",
-        //         gap: "1rem"
-        //     }}
-        // >
-        //     {/* Video Call Section */}
-        //     <Box
-        //         sx={{
-        //             flex: 1,
-        //             display: 'flex',
-        //             flexDirection: 'column',
-        //             alignItems: 'center',
-        //             justifyContent: 'center',
-        //             bgcolor: '#333',
-        //             height: '100%',
-        //             width: "100%",
-        //             borderRadius: 2,
-        //             overflow: "hidden"
-        //             // marginRight: 2,
-        //         }}
-        //     >
-        //         {
-        //             !videoEnabled &&
-        //             <>
-        //                 <VideoOffIcon sx={{ fontSize: 50, color: '#888' }} />
-        //                 <Typography color="white" mt={1}>
-        //                     Camera off
-        //                 </Typography>
-        //             </>
-        //         }
+//         //         <video
+//         //             playsInline
+//         //             ref={myVideo}
+//         //             autoPlay
+//         //             muted={!audioEnabled}
+//         //             style={{
+//         //                 margin: "0 1rem",
+//         //                 width: "100%",
+//         //             }}
+//         //         />
+//         //         {callAccept && !callEnded && <video
+//         //             playsInline
+//         //             ref={userVideo}
+//         //             autoPlay
+//         //             muted={!audioEnabled}
+//         //             style={{
+//         //                 margin: "0 1rem",
+//         //                 width: "100%",
+//         //             }}
+//         //         />}
 
-        //         <video
-        //             playsInline
-        //             ref={myVideo}
-        //             autoPlay
-        //             muted={!audioEnabled}
-        //             style={{
-        //                 margin: "0 1rem",
-        //                 width: "100%",
-        //             }}
-        //         />
-        //         {callAccept && !callEnded && <video
-        //             playsInline
-        //             ref={userVideo}
-        //             autoPlay
-        //             muted={!audioEnabled}
-        //             style={{
-        //                 margin: "0 1rem",
-        //                 width: "100%",
-        //             }}
-        //         />}
+//         //         <Box
+//         //             sx={{
+//         //                 display: 'flex',
+//         //                 justifyContent: 'center',
+//         //                 mt: 'auto',
+//         //                 mb: 2,
+//         //             }}
+//         //         >
+//         //             <IconButton onClick={toggleVideo}>
+//         //                 {videoEnabled ? <VideoIcon sx={{ color: 'white' }} /> : <VideoOffIcon sx={{ color: 'white' }} />}
+//         //             </IconButton>
+//         //             <IconButton onClick={toggleAudio}>
+//         //                 {audioEnabled ? <MicIcon sx={{ color: 'white' }} /> : <MicOffIcon sx={{ color: 'white' }} />}
+//         //             </IconButton>
+//         //             <IconButton>
+//         //                 <VolumeUpIcon sx={{ color: 'white' }} />
+//         //             </IconButton>
+//         //             <IconButton>
+//         //                 <SettingsIcon sx={{ color: 'white' }} />
+//         //             </IconButton>
+//         //         </Box>
+//         //     </Box>
 
-        //         <Box
-        //             sx={{
-        //                 display: 'flex',
-        //                 justifyContent: 'center',
-        //                 mt: 'auto',
-        //                 mb: 2,
-        //             }}
-        //         >
-        //             <IconButton onClick={toggleVideo}>
-        //                 {videoEnabled ? <VideoIcon sx={{ color: 'white' }} /> : <VideoOffIcon sx={{ color: 'white' }} />}
-        //             </IconButton>
-        //             <IconButton onClick={toggleAudio}>
-        //                 {audioEnabled ? <MicIcon sx={{ color: 'white' }} /> : <MicOffIcon sx={{ color: 'white' }} />}
-        //             </IconButton>
-        //             <IconButton>
-        //                 <VolumeUpIcon sx={{ color: 'white' }} />
-        //             </IconButton>
-        //             <IconButton>
-        //                 <SettingsIcon sx={{ color: 'white' }} />
-        //             </IconButton>
-        //         </Box>
-        //     </Box>
-
-        //     {/* Profile Section */}
-        //     {
-        //         callReceive ?
-        //             <CallDailCard
-        //                 avatar={[callerData?.callerAvatar]}
-        //                 name={callerData.callerName}
-        //                 callHandler={answerCall}
-        //                 // ringTone={INCOMING_RING}
-        //                 calling={true}
-        //                 callType={callerData.callType}
-        //                 callAnswer={answerCall}
-        //             />
-        //             :
-        //             isLoading ? <Skeleton />
-        //                 :
-        //                 <CallDailCard
-        //                     avatar={friendUser?.avatar}
-        //                     name={friendUser?.groupChat ? friendUser?.name : friendUser?.members[0].name}
-        //                     callHandler={callUser}
-        //                     // ringTone={OUTGOING_RING}
-        //                     calling={calling}
-        //                 />
-        //     }
-        // </Box>
-    );
+//         //     {/* Profile Section */}
+//         //     {
+//         //         callReceive ?
+//         //             <CallDailCard
+//         //                 avatar={[callerData?.callerAvatar]}
+//         //                 name={callerData.callerName}
+//         //                 callHandler={answerCall}
+//         //                 // ringTone={INCOMING_RING}
+//         //                 calling={true}
+//         //                 callType={callerData.callType}
+//         //                 callAnswer={answerCall}
+//         //             />
+//         //             :
+//         //             isLoading ? <Skeleton />
+//         //                 :
+//         //                 <CallDailCard
+//         //                     avatar={friendUser?.avatar}
+//         //                     name={friendUser?.groupChat ? friendUser?.name : friendUser?.members[0].name}
+//         //                     callHandler={callUser}
+//         //                     // ringTone={OUTGOING_RING}
+//         //                     calling={calling}
+//         //                 />
+//         //     }
+//         // </Box>
+//     );
+// }
 };
 
 export default Call
